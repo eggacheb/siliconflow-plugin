@@ -307,6 +307,12 @@ export function supportGuoba() {
           component: "Switch",
         },
         {
+          field: "gg_useSearch",
+          label: "[#gg]搜索功能",
+          bottomHelpMessage: "开启后Gemini将使用搜索引擎获取最新信息来回答问题，仅限gemini-2.0-flash-exp模型",
+          component: "Switch",
+        },
+        {
           field: "gg_Prompt",
           label: "[#gg]对话API提示词",
           bottomHelpMessage: "设置#gg 对话的API接口的系统提示词，自动将提示词中的字符串 {{user_name}} 替换为用户昵称/群昵称",

@@ -35,7 +35,7 @@ export class SF_Painting extends plugin {
                     fnc: 'sf_draw'
                 },
                 {
-                    reg: '^#(sf|SF|siliconflow|硅基流动)设置(画图key|翻译key|翻译baseurl|翻译模型|生成提示词|推理步数|fish发音人|ss图片模式|ggkey|ggbaseurl|gg图片模式|上下文|ss转发消息|gg转发消息)',
+                    reg: '^#(sf|SF|siliconflow|硅基流动)设置(画图key|翻译key|翻译baseurl|翻译模型|生成提示词|推理步数|fish发音人|ss图片模式|ggkey|ggbaseurl|gg图片模式|上下文|ss转发消息|gg转发消息|gg搜索)',
                     fnc: 'sf_setConfig',
                     permission: 'master'
                 },
@@ -152,7 +152,7 @@ export class SF_Painting extends plugin {
     async sf_setConfig(e) {
         // 读取配置
         let config_date = Config.getConfig()
-        const match = e.msg.match(/^#(sf|SF|siliconflow|硅基流动)设置(画图key|翻译key|翻译baseurl|翻译模型|生成提示词|推理步数|fish发音人|ss图片模式|ggkey|ggbaseurl|gg图片模式|上下文|ss转发消息|gg转发消息)([\s\S]*)/)
+        const match = e.msg.match(/^#(sf|SF|siliconflow|硅基流动)设置(画图key|翻译key|翻译baseurl|翻译模型|生成提示词|推理步数|fish发音人|ss图片模式|ggkey|ggbaseurl|gg图片模式|上下文|ss转发消息|gg转发消息|gg搜索)([\s\S]*)/)
         if (match) {
             const [, , type, value] = match
             switch (type) {
@@ -191,6 +191,9 @@ export class SF_Painting extends plugin {
                     break
                 case 'gg转发消息':
                     config_date.gg_forwardMessage = value === '开'
+                    break
+                case 'gg搜索':
+                    config_date.gg_useSearch = value === '开'
                     break
                 default:
                     return
@@ -533,7 +536,8 @@ SF插件设置帮助：
 9. 设置上下文功能：#sf设置上下文 开/关
 10. 设置ss转发消息：#sf设置ss转发消息 开/关
 11. 设置gg转发消息：#sf设置gg转发消息 开/关
-12. 查看帮助：#sf帮助
+12. 设置gg搜索功能：#sf设置gg搜索 开/关
+13. 查看帮助：#sf帮助
 
 对话指令：
 1. #gg [内容]：使用Gemini对话
@@ -770,9 +774,9 @@ SF插件设置帮助：
                 }]
             },
             "contents": [],
-            "tools": [{
+            "tools": config_date.gg_useSearch ? [{
                 "googleSearch": {}
-            }]
+            }] : []
         };
 
         // 添加历史对话
