@@ -1502,14 +1502,15 @@ ${e.sfRuntime.isgeneratePrompt === undefined ? "tags的额外触发词：\n 自�
         });
 
         try {
-            const response = await fetch(`${ggBaseUrl}/v1beta/models/${opt.model}:generateContent?key=${ggKey}`, {
+            const response = await fetch(`${ggBaseUrl}/v1beta/models/${opt.model}:generateContent`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'x-goog-api-key': ggKey
                 },
                 body: JSON.stringify(requestBody)
             })
-
+            
             const data = await response.json()
 
             if (data?.candidates?.[0]?.content?.parts) {
