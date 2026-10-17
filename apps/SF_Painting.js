@@ -35,6 +35,7 @@ import { applyPresets, mergePresetImages } from '../utils/applyPresets.js'
 import {
     hidePrivacyInfo,
     removeCQCode,
+    joinTextParts,
     splitString_Enter,
     extractBase64Images,
     removeTrailingSlash,
@@ -1318,6 +1319,9 @@ export class SF_Painting extends plugin {
 
         // 移除 CQ
         answer = removeCQCode(answer);
+        // 分段数组会被 e.reply 拆成多条消息，段间换行也会丢，先拼回一个字符串
+        if (Array.isArray(answer)) logger.info(`[sf插件] 回复为分段数组（${answer.length} 段），已拼回一个字符串`);
+        answer = joinTextParts(answer);
 
         // 处理思考过程
         let thinkingContent = '';
@@ -2221,6 +2225,9 @@ ${e.sfRuntime.isgeneratePrompt === undefined ? "Tags中可用：--自动提示�
 
         // 移除 CQ
         answer = removeCQCode(answer);
+        // 分段数组会被 e.reply 拆成多条消息，段间换行也会丢，先拼回一个字符串
+        if (Array.isArray(answer)) logger.info(`[sf插件] 回复为分段数组（${answer.length} 段），已拼回一个字符串`);
+        answer = joinTextParts(answer);
 
         // 保存AI回复
         if (config_date.gg_ss_useContext && !paintModel) {

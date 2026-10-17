@@ -242,6 +242,26 @@ export function removeCQCode(msg) {
 }
 
 /**
+ * 把「分段数组」形式的回复拼回一个字符串。
+ * 部分接口会把 content 返回成字符串数组或 { type: 'text', text } 数组，
+ * 直接交给 e.reply 会被拆成多条消息、段与段之间的换行也会丢失，
+ * 导致 markdown 的标题、表格、代码块全部失效。
+ * 只有在所有元素都是文本时才拼接；含图片等非文本段时原样返回。
+ */
+export function joinTextParts(content, separator = '\n') {
+  if (!Array.isArray(content) || content.length === 0) return content
+
+  const texts = []
+  for (const part of content) {
+    if (typeof part === 'string') texts.push(part)
+    else if (part && part.type === 'text' && typeof part.text === 'string') texts.push(part.text)
+    else return content
+  }
+
+  return texts.filter(text => text !== '').join(separator)
+}
+
+/**
  * 在 At 段落后面的文本前补充一个空格，避免渲染成「@群员你好」
  * 必须在 removeCQCode 之后调用：removeCQCode 会对文本做 trim，先补的空格会被吃掉
  * @param {Array} msg - 消息数组
